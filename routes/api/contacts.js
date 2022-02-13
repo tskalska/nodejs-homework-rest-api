@@ -1,5 +1,4 @@
 const express = require('express');
-// const todoContacts = require('../../models/contacts');
 const {Contact, schema, joiUpdateFavoriteSchema} = require("../../models/contact");
 
 const router = express.Router()
@@ -13,7 +12,6 @@ router.get('/', async (req, res) => {
       response: contacts
     }
   })
-  console.log(contacts);
 })
 
 router.get('/:contactId', async (req, res) => {
@@ -121,7 +119,6 @@ router.patch("/:contactId/favorite", async(req, res)=> {
   }
       
   const newContact = await Contact.findByIdAndUpdate(contactId, req.body, {new:true});
-  console.log(newContact);
   if(!newContact) {res.status(404).json({
     status:'error',
     code: 404,
