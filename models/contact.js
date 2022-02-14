@@ -33,7 +33,7 @@ const contactSchema = Schema ({
   const joiUpdateFavoriteSchema = Joi.object({
     favorite: Joi.boolean().required()
   })
-  
+
 
   module.exports = {
     Contact,

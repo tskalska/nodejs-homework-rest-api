@@ -1,7 +1,9 @@
 const express = require('express');
 const {Contact, schema, joiUpdateFavoriteSchema} = require("../../models/contact");
 
-const router = express.Router()
+const router = express.Router();
+const ObjectId = require('mongoose').Types.ObjectId;
+
 
 router.get('/', async (req, res) => {
   const contacts = await Contact.find({});
@@ -16,22 +18,30 @@ router.get('/', async (req, res) => {
 
 router.get('/:contactId', async (req, res) => {
   const{contactId}=req.params;
-  const contact = await Contact.findById(contactId);;
-  if(!contact){ 
+
+  if (ObjectId.isValid(contactId)!==true){
     res.status(404).json({
-    status:'error',
-    code: 404,
-    message: `Contact with id ${contactId} not found`,
+      status:'error',
+      code: 404,
+      message: `invalid ID`,
     }) 
-  } else {
-    res.json({
-    status: 'success',
-    code: 200,
-    data:  {
-    response: contact
+    return;
+  } 
+
+  const contact = await Contact.findById(contactId);
+    if(!contact){ 
+      res.status(404).json({
+      status:'error',
+      code: 404,
+      message: `Contact with id ${contactId} not found`,
+      }) 
+    } else {
+      res.json({
+      status: 'success',
+      code: 200,
+      data:  { response: contact }
+      });
     }
-  });}
-   
 })
 
 router.post('/', async (req, res) => {
@@ -48,6 +58,7 @@ router.post('/', async (req, res) => {
     });
     return;
   }
+
   const newContact = await Contact.create({name,email,phone});
   res.json({
     status: 'success',
@@ -58,6 +69,16 @@ router.post('/', async (req, res) => {
 
 router.delete('/:contactId', async (req, res) => {
   const{contactId}=req.params;
+
+  if (ObjectId.isValid(contactId)!==true){
+    res.status(404).json({
+      status:'error',
+      code: 404,
+      message: `invalid ID`,
+    }) 
+    return;
+  } 
+
   const newContacts = await Contact.findByIdAndDelete(contactId);
   if (!newContacts)
    {res.status(404).json({
@@ -78,6 +99,15 @@ router.put('/:contactId', async (req, res) => {
   const {body} = req;
   const { error } = schema.validate(body, {abortEarly: false, allowUnknown:true});
   const {contactId} = req.params;
+
+  if (ObjectId.isValid(contactId)!==true){
+    res.status(404).json({
+      status:'error',
+      code: 404,
+      message: `invalid ID`,
+    }) 
+    return;
+  } 
 
   if (error) {
     res.status(422).json({
