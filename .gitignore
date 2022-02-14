@@ -1,3 +1,4 @@
 node_modules
 password.md
 .env
+.env.example
