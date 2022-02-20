@@ -5,6 +5,8 @@ const {Contact} = require("../../models/contact");
 const getById = async (req, res) => {
     
     const{contactId} = req.params;
+    const {_id} = req.user;
+
   
     if (ObjectId.isValid(contactId)!==true){
       res.status(404).json({
@@ -15,7 +17,11 @@ const getById = async (req, res) => {
       return;
     } 
   
-    const contact = await Contact.findById(contactId);
+    const contact = await Contact.findOne({
+      _id: contactId,
+      owner: _id
+    });
+    
       if(!contact){ 
         res.status(404).json({
         status:'error',

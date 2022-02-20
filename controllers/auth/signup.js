@@ -1,8 +1,7 @@
-const { User } = require("../../models/user");
+const { User, signUpJoiSchema } = require("../../models/user");
 const { Conflict } = require("http-errors");
 const bcrypt = require("bcryptjs");
-const {signUpJoiSchema} = require("../../models")
-
+    
 
 const signup = async (req, res, next)=> {
     try {
@@ -16,6 +15,7 @@ const signup = async (req, res, next)=> {
         if(user){
             throw new Conflict(`User with email ${email} alredy exists`);
         }
+
         const salt = await bcrypt.genSalt(10);
         const hashPassword = await bcrypt.hash(password, salt);
         await User.create({name, email, password: hashPassword});

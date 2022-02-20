@@ -7,8 +7,8 @@ const router = express.Router();
 router.get('/', authenticate, getAll);
 router.get('/:contactId', authenticate, getById);
 router.post("/", authenticate, add);
-router.delete('/:contactId', deleteById);
-router.put('/:contactId', changeContact);
-router.patch("/:contactId/favorite", changeFavorite);
+router.delete('/:contactId', authenticate, deleteById);
+router.put('/:contactId', authenticate, changeContact);
+router.patch("/:contactId/favorite", authenticate, changeFavorite);
 
 module.exports = router;

@@ -5,6 +5,8 @@ const changeContact = async (req, res) => {
     const {body} = req;
     const { error } = schema.validate(body, {abortEarly: false, allowUnknown:true});
     const {contactId} = req.params;
+    const {_id} = req.user;
+
   
     if (ObjectId.isValid(contactId)!==true){
       res.status(404).json({
@@ -24,19 +26,23 @@ const changeContact = async (req, res) => {
       return;
     }
   
-      const updateContact = await Contact.findByIdAndUpdate(contactId, body);
-      if (!updateContact)
-      {res.status(404).json({
-        status:'error',
-        code: 404,
-        message: 'Not found',
-      }) 
-      } else {
-      res.json({
-        status: 'success',
-        code: 200,
-        data: {response: updateContact}
-      })}
+    const updateContact = await Contact.findOneAndUpdate({
+      _id: contactId,
+      owner: _id 
+    }, body);
+
+    if (!updateContact)
+    {res.status(404).json({
+      status:'error',
+      code: 404,
+      message: 'Not found',
+    }) 
+    } else {
+    res.json({
+      status: 'success',
+      code: 200,
+      message: 'Contact changed', 
+    })}
   }
 
   module.exports = changeContact;

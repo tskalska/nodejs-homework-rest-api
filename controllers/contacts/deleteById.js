@@ -4,6 +4,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
 
 const deleteById = async (req, res) => {
     const{contactId}=req.params;
+    const {_id} = req.user;
 
     if (ObjectId.isValid(contactId)!==true){
         res.status(404).json({
@@ -12,9 +13,14 @@ const deleteById = async (req, res) => {
         message: `invalid ID`,
         }) 
         return;
-    } 
+    }
 
-    const newContacts = await Contact.findByIdAndDelete(contactId);
+
+    const newContacts = await Contact.findOneAndRemove({
+        _id: contactId,
+        owner:_id
+    });
+    
     if (!newContacts)
         {res.status(404).json({
         status:'error',
@@ -25,7 +31,10 @@ const deleteById = async (req, res) => {
         res.json({
         status: 'success',
         code: 200,
-        message:'contact deleted'
+        message:'contact deleted',
+        data: {
+            contact: newContacts
+        }
         })
     }
 }
