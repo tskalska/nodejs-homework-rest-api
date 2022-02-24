@@ -40,7 +40,6 @@ const changeAvatar = async (req, res) => {
         })}
 
     } catch (error) {
-        console.log(error);
         await fs.unlink(tempUpload);
     }
 }
