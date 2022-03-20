@@ -18,6 +18,9 @@ const authenticate = async (req, res, next)=> {
         if(!user || !user.token) {
             throw new Unauthorized("Not authorized");
         }
+        if(!user.verify){
+            throw console.log("Not authorized")
+        }
         req.user = user;
         next()
     } catch (error) {
