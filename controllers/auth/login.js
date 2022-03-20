@@ -20,7 +20,9 @@ const login = async (req, res, next)=> {
             if (!user) {
                 throw new Unauthorized ("User not found");
             }
-
+            if (!user.varify) {
+                throw new Unauthorized ("User not varify");
+            }
             const compareResult = await bcrypt.compare(password, user.password);
 
             if(!compareResult){
